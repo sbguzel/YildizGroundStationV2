@@ -20,6 +20,8 @@ using AForge.Video;
 
 //teyhan 2
 
+// Burak kenidisi yaptı
+
 namespace YildizGroundStation
 {
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
