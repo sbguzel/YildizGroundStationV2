@@ -1,0 +1,720 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+
+    <title>Quick Start - Leaflet</title>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: auto;
+        }
+
+        #mapid {
+            width: 1800px;
+            height: 1200px;
+        }
+    </style>
+
+    <style>
+        body {
+            padding: 0;
+            margin: auto;
+        }
+
+        #mapid {
+            height: 100%;
+            width: 100vw;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
+
+    <!-- ICONLAYERS.CSS -->
+    <style>
+        .leaflet-iconLayers {
+            pointer-events: none;
+        }
+
+        .leaflet-iconLayers-layersRow {
+            display: table;
+            pointer-events: auto;
+        }
+
+        .leaflet-iconLayers-layerCell {
+            display: table-cell;
+            background-image: url('transparent-pixel.png'); /* ie9 fix */
+        }
+
+        .leaflet-iconLayers_topleft .leaflet-iconLayers-layerCell, .leaflet-iconLayers_bottomleft .leaflet-iconLayers-layerCell {
+            padding-right: 5px;
+        }
+
+        .leaflet-iconLayers_topright .leaflet-iconLayers-layerCell, .leaflet-iconLayers_bottomright .leaflet-iconLayers-layerCell {
+            padding-left: 5px;
+        }
+
+        .leaflet-iconLayers_topleft .leaflet-iconLayers-layerCell, .leaflet-iconLayers_topright .leaflet-iconLayers-layerCell {
+            padding-bottom: 5px;
+        }
+
+        .leaflet-iconLayers_bottomleft .leaflet-iconLayers-layerCell, .leaflet-iconLayers_bottomright .leaflet-iconLayers-layerCell {
+            padding-top: 5px;
+        }
+
+        .leaflet-iconLayers-layer {
+            cursor: pointer;
+            position: relative;
+            width: 80px;
+            height: 80px;
+            background-color: #fff;
+            background-repeat: no-repeat;
+            background-size: cover;
+            text-align: center;
+            box-sizing: border-box;
+            box-shadow: 0 0 5px #000;
+        }
+
+        .leaflet-iconLayers-layerTitleContainer {
+            display: table;
+            width: 100%;
+            background: rgba(255,255,255,0.6);
+            height: 25%;
+            padding: 0;
+            border: 0;
+            position: absolute;
+            bottom: 0%;
+            transition: bottom .35s ease;
+        }
+
+        .leaflet-iconLayers-layerCheckIcon {
+            display: none;
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            width: 18px;
+            height: 18px;
+            background: url('check.png');
+            background-color: #fff;
+            background-repeat: no-repeat;
+            background-position: 4px 4px;
+            border-radius: 10px;
+            box-sizing: border-box;
+            border: 1px solid rgba(0,0,0,0.6);
+        }
+
+        .leaflet-iconLayers-layerTitle {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .leaflet-iconLayers-layerCell_hidden {
+            display: none;
+        }
+
+        .leaflet-iconLayers-layerCell_active .leaflet-iconLayers-layer {
+            cursor: default;
+        }
+
+        .leaflet-iconLayers-layerCell_active .leaflet-iconLayers-layerCheckIcon {
+            display: block;
+        }
+
+    </style>
+    <!-- PROVIDERS.JS -->
+    <script>
+        var providers = {};
+
+        providers['OpenStreetMap_Mapnik'] = {
+            title: 'osm',
+            icon: 'icons/openstreetmap_mapnik.png',
+            layer: L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            })
+        };
+
+        providers['OpenStreetMap_BlackAndWhite'] = {
+            title: 'osm bw',
+            icon: 'icons/openstreetmap_blackandwhite.png',
+            layer: L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            })
+        };
+
+        providers['OpenStreetMap_DE'] = {
+            title: 'osm de',
+            icon: 'icons/openstreetmap_de.png',
+            layer: L.tileLayer('http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            })
+        }
+
+        providers['Stamen_Toner'] = {
+            title: 'toner',
+            icon: 'icons/stamen_toner.png',
+            layer: L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png', {
+                attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                subdomains: 'abcd',
+                minZoom: 0,
+                maxZoom: 20,
+                ext: 'png'
+            })
+        };
+
+        providers['Esri_WorldTerrain'] = {
+            title: 'esri terrain',
+            icon: 'icons/esri_worldterrain.png',
+            layer: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Source: USGS, Esri, TANA, DeLorme, and NPS',
+                maxZoom: 13
+            })
+        };
+
+        providers['Esri_OceanBasemap'] = {
+            title: 'esri ocean',
+            icon: 'icons/esri_oceanbasemap.png',
+            layer: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
+                maxZoom: 13
+            })
+        };
+
+        providers['HERE_normalDay'] = {
+            title: 'normalday',
+            icon: 'icons/here_normalday.png',
+            layer: L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/normal.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
+                attribution: 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
+                subdomains: '1234',
+                mapID: 'newest',
+                app_id: 'Y8m9dK2brESDPGJPdrvs',
+                app_code: 'dq2MYIvjAotR8tHvY8Q_Dg',
+                base: 'base',
+                maxZoom: 20
+            })
+        };
+
+        providers['HERE_normalDayGrey'] = {
+            title: 'normalday grey',
+            icon: 'icons/here_normaldaygrey.png',
+            layer: L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/normal.day.grey/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
+                attribution: 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
+                subdomains: '1234',
+                mapID: 'newest',
+                app_id: 'Y8m9dK2brESDPGJPdrvs',
+                app_code: 'dq2MYIvjAotR8tHvY8Q_Dg',
+                base: 'base',
+                maxZoom: 20
+            })
+        };
+
+        providers['HERE_satelliteDay'] = {
+            title: 'satellite',
+            icon: 'icons/here_satelliteday.png',
+            layer: L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/satellite.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
+                attribution: 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
+                subdomains: '1234',
+                mapID: 'newest',
+                app_id: 'Y8m9dK2brESDPGJPdrvs',
+                app_code: 'dq2MYIvjAotR8tHvY8Q_Dg',
+                base: 'aerial',
+                maxZoom: 20
+            })
+        };
+
+        providers['CartoDB_Positron'] = {
+            title: 'positron',
+            icon: 'icons/cartodb_positron.png',
+            layer: L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+                subdomains: 'abcd',
+                maxZoom: 19
+            })
+        };
+    </script>
+    <!-- ICONLAYERS.JS -->
+    <script>
+        // JavaScript source code
+        + function () {
+            function each(o, cb) {
+                for (var p in o) {
+                    if (o.hasOwnProperty(p)) {
+                        cb(o[p], p, o);
+                    }
+                }
+            }
+
+            function find(ar, cb) {
+                if (ar.length) {
+                    for (var i = 0; i < ar.length; i++) {
+                        if (cb(ar[i])) {
+                            return ar[i];
+                        }
+                    }
+                } else {
+                    for (var p in ar) {
+                        if (ar.hasOwnProperty(p) && cb(ar[p])) {
+                            return ar[p];
+                        }
+                    }
+                }
+            }
+
+            function first(o) {
+                for (var p in o) {
+                    if (o.hasOwnProperty(p)) {
+                        return o[p];
+                    }
+                }
+            }
+
+            function length(o) {
+                var length = 0;
+                for (var p in o) {
+                    if (o.hasOwnProperty(p)) {
+                        length++;
+                    }
+                }
+                return length;
+            }
+
+            function prepend(parent, el) {
+                if (parent.children.length) {
+                    parent.insertBefore(el, parent.children[0]);
+                } else {
+                    parent.appendChild(el);
+                }
+            }
+
+            L.Control.IconLayers = L.Control.extend({
+                includes: L.Mixin.Events,
+                _getActiveLayer: function () {
+                    if (this._activeLayerId) {
+                        return this._layers[this._activeLayerId];
+                    } else if (length(this._layers)) {
+                        return first(this._layers);
+                    } else {
+                        return null;
+                    }
+                },
+                _getPreviousLayer: function () {
+                    var activeLayer = this._getActiveLayer();
+                    if (!activeLayer) {
+                        return null;
+                    } else if (this._previousLayerId) {
+                        return this._layers[this._previousLayerId];
+                    } else {
+                        return find(this._layers, function (l) {
+                            return l.id !== activeLayer.id;
+                        }.bind(this)) || null;
+                    }
+                },
+                _getInactiveLayers: function () {
+                    var ar = [];
+                    var activeLayerId = this._getActiveLayer() ? this._getActiveLayer().id : null;
+                    var previousLayerId = this._getPreviousLayer() ? this._getPreviousLayer().id : null;
+                    each(this._layers, function (l) {
+                        if ((l.id !== activeLayerId) && (l.id !== previousLayerId)) {
+                            ar.push(l);
+                        }
+                    });
+                    return ar;
+                },
+                _arrangeLayers: function () {
+                    var behaviors = {};
+
+                    behaviors['previous'] = function () {
+                        var layers = this._getInactiveLayers();
+                        this._getActiveLayer() && layers.unshift(this._getActiveLayer());
+                        this._getPreviousLayer() && layers.unshift(this._getPreviousLayer());
+                        return layers;
+                    };
+
+                    return behaviors[this.options.behavior].apply(this, arguments);
+                },
+                _getLayerCellByLayerId: function (id) {
+                    var els = this._container.getElementsByClassName('leaflet-iconLayers-layerCell');
+                    for (var i = 0; i < els.length; i++) {
+                        if (els[i].getAttribute('data-layerid') == id) {
+                            return els[i];
+                        }
+                    }
+                },
+                _createLayerElement: function (layerObj) {
+                    var el = L.DomUtil.create('div', 'leaflet-iconLayers-layer');
+                    if (layerObj.title) {
+                        var titleContainerEl = L.DomUtil.create('div', 'leaflet-iconLayers-layerTitleContainer');
+                        var titleEl = L.DomUtil.create('div', 'leaflet-iconLayers-layerTitle');
+                        var checkIconEl = L.DomUtil.create('div', 'leaflet-iconLayers-layerCheckIcon');
+                        titleEl.innerHTML = layerObj.title;
+                        titleContainerEl.appendChild(titleEl);
+                        el.appendChild(titleContainerEl);
+                        el.appendChild(checkIconEl);
+                    }
+                    if (layerObj.icon) {
+                        el.setAttribute('style', "background-image: url('" + layerObj.icon + "')");
+                    }
+                    return el;
+                },
+                _createLayerElements: function () {
+                    var currentRow, layerCell;
+                    var layers = this._arrangeLayers();
+                    var activeLayerId = this._getActiveLayer() && this._getActiveLayer().id;
+
+                    for (var i = 0; i < layers.length; i++) {
+                        if (i % this.options.maxLayersInRow === 0) {
+                            currentRow = L.DomUtil.create('div', 'leaflet-iconLayers-layersRow');
+                            if (this.options.position.indexOf('bottom') === -1) {
+                                this._container.appendChild(currentRow);
+                            } else {
+                                prepend(this._container, currentRow);
+                            }
+                        }
+                        layerCell = L.DomUtil.create('div', 'leaflet-iconLayers-layerCell');
+                        layerCell.setAttribute('data-layerid', layers[i].id);
+                        if (i !== 0) {
+                            L.DomUtil.addClass(layerCell, 'leaflet-iconLayers-layerCell_hidden');
+                        }
+                        if (layers[i].id === activeLayerId) {
+                            L.DomUtil.addClass(layerCell, 'leaflet-iconLayers-layerCell_active');
+                        }
+                        if (this._expandDirection === 'left') {
+                            L.DomUtil.addClass(layerCell, 'leaflet-iconLayers-layerCell_expandLeft');
+                        } else {
+                            L.DomUtil.addClass(layerCell, 'leaflet-iconLayers-layerCell_expandRight');
+                        }
+                        layerCell.appendChild(this._createLayerElement(layers[i]));
+
+                        if (this.options.position.indexOf('right') === -1) {
+                            currentRow.appendChild(layerCell);
+                        } else {
+                            prepend(currentRow, layerCell);
+                        }
+                    }
+                },
+                _onLayerClick: function (e) {
+                    e.stopPropagation();
+                    var layerId = e.currentTarget.getAttribute('data-layerid');
+                    var layer = this._layers[layerId];
+                    this.setActiveLayer(layer.layer);
+                    this.expand();
+                },
+                _attachEvents: function () {
+                    each(this._layers, function (l) {
+                        var e = this._getLayerCellByLayerId(l.id);
+                        if (e) {
+                            e.addEventListener('click', this._onLayerClick.bind(this));
+                        }
+                    }.bind(this));
+                    var layersRowCollection = this._container.getElementsByClassName('leaflet-iconLayers-layersRow');
+                    for (var i = 0; i < layersRowCollection.length; i++) {
+                        var el = layersRowCollection[i];
+                        el.addEventListener('mouseenter', function (e) {
+                            e.stopPropagation();
+                            this.expand();
+                        }.bind(this));
+                        el.addEventListener('mouseleave', function (e) {
+                            e.stopPropagation();
+                            this.collapse();
+                        }.bind(this));
+                        el.addEventListener('mousemove', function (e) {
+                            e.stopPropagation();
+                        });
+                    }
+                },
+                _render: function () {
+                    this._container.innerHTML = '';
+                    this._createLayerElements();
+                    this._attachEvents();
+                },
+                _switchMapLayers: function () {
+                    if (!this._map) {
+                        return;
+                    }
+                    var activeLayer = this._getActiveLayer();
+                    var previousLayer = this._getPreviousLayer();
+                    if (previousLayer) {
+                        this._map.removeLayer(previousLayer.layer);
+                    } else {
+                        each(this._layers, function (layerObject) {
+                            var layer = layerObject.layer;
+                            this._map.removeLayer(layer);
+                        }.bind(this));
+                    }
+                    if (activeLayer) {
+                        this._map.addLayer(activeLayer.layer);
+                    }
+                },
+                options: {
+                    position: 'bottomleft', // one of expanding directions depends on this
+                    behavior: 'previous', // may be 'previous', 'expanded' or 'first'
+                    expand: 'horizontal', // or 'vertical'
+                    autoZIndex: true, // from L.Control.Layers
+                    maxLayersInRow: 5,
+                    manageLayers: true
+                },
+                initialize: function (layers, options) {
+                    if (!L.Util.isArray(arguments[0])) {
+                        // first argument is options
+                        options = layers;
+                        layers = [];
+                    }
+                    L.setOptions(this, options);
+                    this._expandDirection = (this.options.position.indexOf('left') != -1) ? 'right' : 'left';
+                    if (this.options.manageLayers) {
+                        this.on('activelayerchange', this._switchMapLayers, this);
+                    }
+                    this.setLayers(layers);
+                },
+                onAdd: function (map) {
+                    this._container = L.DomUtil.create('div', 'leaflet-iconLayers');
+                    L.DomUtil.addClass(this._container, 'leaflet-iconLayers_' + this.options.position);
+                    this._render();
+                    map.on('click', this.collapse, this);
+                    if (this.options.manageLayers) {
+                        this._switchMapLayers();
+                    }
+                    return this._container;
+                },
+                onRemove: function (map) {
+                    map.off('click', this.collapse, this);
+                },
+                setLayers: function (layers) {
+                    this._layers = {};
+                    layers.map(function (layer) {
+                        var id = L.stamp(layer.layer)
+                        this._layers[id] = L.extend(layer, {
+                            id: id
+                        });
+                    }.bind(this));
+                    this._container && this._render();
+                },
+                setActiveLayer: function (layer) {
+                    var l = layer && this._layers[L.stamp(layer)];
+                    if (!l || l.id === this._activeLayerId) {
+                        return;
+                    }
+                    this._previousLayerId = this._activeLayerId;
+                    this._activeLayerId = l.id;
+                    this._container && this._render();
+                    this.fire('activelayerchange', {
+                        layer: layer
+                    });
+                },
+                expand: function () {
+                    this._arrangeLayers().slice(1).map(function (l) {
+                        var el = this._getLayerCellByLayerId(l.id);
+                        L.DomUtil.removeClass(el, 'leaflet-iconLayers-layerCell_hidden');
+                    }.bind(this));
+                },
+                collapse: function () {
+                    this._arrangeLayers().slice(1).map(function (l) {
+                        var el = this._getLayerCellByLayerId(l.id);
+                        L.DomUtil.addClass(el, 'leaflet-iconLayers-layerCell_hidden');
+                    }.bind(this));
+                }
+            });
+        }();
+
+        L.control.iconLayers = function (layers, options) {
+            return new L.Control.IconLayers(layers, options);
+        };
+    </script>
+    <!-- ROTATEDMARKER.JS -->
+    <script>
+        // JavaScript source code
+        (function () {
+            // save these original methods before they are overwritten
+            var proto_initIcon = L.Marker.prototype._initIcon;
+            var proto_setPos = L.Marker.prototype._setPos;
+
+            var oldIE = (L.DomUtil.TRANSFORM === 'msTransform');
+
+            L.Marker.addInitHook(function () {
+                var iconOptions = this.options.icon && this.options.icon.options;
+                var iconAnchor = iconOptions && this.options.icon.options.iconAnchor;
+                if (iconAnchor) {
+                    iconAnchor = (iconAnchor[0] + 'px ' + iconAnchor[1] + 'px');
+                }
+                this.options.rotationOrigin = this.options.rotationOrigin || iconAnchor || 'center bottom';
+                this.options.rotationAngle = this.options.rotationAngle || 0;
+
+                // Ensure marker keeps rotated during dragging
+                this.on('drag', function (e) { e.target._applyRotation(); });
+            });
+
+            L.Marker.include({
+                _initIcon: function () {
+                    proto_initIcon.call(this);
+                },
+
+                _setPos: function (pos) {
+                    proto_setPos.call(this, pos);
+                    this._applyRotation();
+                },
+
+                _applyRotation: function () {
+                    if (this.options.rotationAngle) {
+                        this._icon.style[L.DomUtil.TRANSFORM + 'Origin'] = this.options.rotationOrigin;
+
+                        if (oldIE) {
+                            // for IE 9, use the 2D rotation
+                            this._icon.style[L.DomUtil.TRANSFORM] = 'rotate(' + this.options.rotationAngle + 'deg)';
+                        } else {
+                            // for modern browsers, prefer the 3D accelerated version
+                            this._icon.style[L.DomUtil.TRANSFORM] += ' rotateZ(' + this.options.rotationAngle + 'deg)';
+                        }
+                    }
+                },
+
+                setRotationAngle: function (angle) {
+                    this.options.rotationAngle = angle;
+                    this.update();
+                    return this;
+                },
+
+                setRotationOrigin: function (origin) {
+                    this.options.rotationOrigin = origin;
+                    this.update();
+                    return this;
+                }
+            });
+        })();
+    </script>
+</head>
+<body>
+
+
+
+    <div id="mapid"></div>
+    <input id="LatLngClick" type="hidden" name="LatLngClick" runat="server" value="LatLng(00.000000, 00.000000)" />
+    <input id="uav_lat" type="hidden" name="uav_lat" runat="server" value="41.021693" />
+    <input id="uav_lng" type="hidden" name="uav_lng" runat="server" value="29.094806" />
+    <input id="com_lat" type="hidden" name="com_lat" runat="server" value="41.011693" />
+    <input id="com_lng" type="hidden" name="com_lng" runat="server" value="29.014806" />
+    <input id="com_alt" type="hidden" name="com_alt" runat="server" value="50" />
+    <input id="com_acc" type="hidden" name="com_acc" runat="server" value="10" />
+
+    <script>
+
+        var mymap = L.map('mapid').setView([41.021693, 29.094806], 17);
+        mymap.setMaxBounds([[180, -90], [-180, 90]]);
+
+        var droneIcon = L.icon({
+            iconUrl: 'D:\\Burak Güzel\\Works\\2019_Bahar\\UAV_2019\\SimulabTelemtry\\SimulabTelemetry_CS\\Resources\\Simge_Guncel.png',
+            //shadowUrl: 'drone-logo.png',
+
+            iconSize: [80, 80], // size of the icon
+            //shadowSize: [50, 64], // size of the shadow
+            iconAnchor: [40, 40], // point of the icon which will correspond to marker's location
+            //shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor: [0, -40] // point from which the popup should open relative to the iconAnchor
+        });
+
+        var homeIcon = L.icon({
+            iconUrl: 'D:\\Burak Güzel\\Works\\2019_Bahar\\UAV_2019\\SimulabTelemtry\\SimulabTelemetry_CS\\Resources\\home2.png',
+            //shadowUrl: 'drone-logo.png',
+            iconSize: [40, 40], // size of the icon
+            //shadowSize: [50, 64], // size of the shadow
+            iconAnchor: [20, 20], // point of the icon which will correspond to marker's location
+            //shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor: [0, -20] // point from which the popup should open relative to the iconAnchor
+        });
+
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+            maxZoom: 21,
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+            '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+            'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>' + ', Designed by <a href="https://www.google.com/">Hamza Köse</a>' + ' | © <a href="https://www.google.com/"> SimuLab</a>',
+            id: 'mapbox.satellite'
+        }).addTo(mymap);
+
+        var uav_marker = L.marker([document.getElementById("uav_lat").value, document.getElementById("uav_lng").value], { icon: droneIcon, rotationAngle: -45, rotationOrigin: '40px 40px' }).addTo(mymap)
+            .bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();
+        mymap.locate();
+
+        var home_marker = L.marker([document.getElementById("com_lat").value, document.getElementById("com_lng").value], { icon: homeIcon, zIndexOffset: 1000 }).addTo(mymap);
+
+
+        /*L.circle([41.021693, 29.094806], 500, {
+            color: undefined,
+            fillColor: '#f03',
+            fillOpacity: 0.3
+        }).addTo(mymap);*/
+
+        L.polygon([
+            [51.509, -0.08],
+            [51.503, -0.06],
+            [51.51, -0.047]
+        ]).addTo(mymap).bindPopup("I am a polygon.");
+
+        var accuracy = L.circle([0, 0], 0, {
+            color: undefined,
+            fillColor: "#faae31",
+            fillOpacity: 0.4
+        }).addTo(mymap);
+
+        var popup = L.popup();
+        function onMapClick(e) {
+            popup
+                .setLatLng(e.latlng)
+                .setContent("You clicked the map at " + e.latlng.toString())
+                .openOn(mymap);
+            document.getElementById("LatLngClick").value = e.latlng;
+            window.external.GetCoordinates();
+        }
+
+        function onMapData() {
+            uav_marker.setLatLng([document.getElementById("uav_lat").value, document.getElementById("uav_lng").value]).addTo(mymap)
+                .bindPopup("<b>Hello world!</b><br />I am a popup.");
+
+        }
+
+        function onLocationFound() {
+            var radius = document.getElementById('com_acc').value;
+            var lat = document.getElementById('com_lat').value;
+            var lng = document.getElementById('com_lng').value;
+
+            home_marker.setLatLng([lat, lng]).addTo(mymap)
+                .bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+            accuracy.setLatLng([lat, lng]).setRadius(radius).addTo(mymap);
+        }
+
+        function onLocationFound2(e) {
+            var radius = e.accuracy / 2;
+
+            L.marker(e.latlng).addTo(mymap)
+                .bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+            L.circle(e.latlng, radius).addTo(mymap);
+        }
+
+        function onLocationError(e) {
+            alert(e.message);
+        }
+
+        var layers = [];
+        for (var providerId in providers) {
+            layers.push(providers[providerId]);
+        }
+
+        var ctrl = L.control.iconLayers(layers).addTo(mymap);
+
+        mymap.on('locationfound', onLocationFound2);
+        mymap.on('locationerror', onLocationError);
+        mymap.locate({ setView: true, maxZoom: 16 });
+        mymap.on('click', onMapClick);
+    </script>
+
+</body>
+</html>
