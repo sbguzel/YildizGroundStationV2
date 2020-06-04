@@ -19,7 +19,11 @@ using AForge.Video;
 //burak2
 
 //teyhan 2
+//denemeye eklendi
+//jlkadsjjflsdajfldsajlfjsdaşfdsal
 
+//Teyhan geldi buraada
+//selamlaaaaar
 namespace YildizGroundStation
 {
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
@@ -81,7 +85,8 @@ namespace YildizGroundStation
 
             //the ChartValues property will store our values array
             ChartValues = new ChartValues<MeasureModel>();
-
+            
+            // Create Series For Altitude
             cartesianChart1.Series.Add(new LineSeries
             {
                 Values = ChartValues,
