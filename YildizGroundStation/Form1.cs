@@ -75,7 +75,8 @@ namespace YildizGroundStation
 
             //the ChartValues property will store our values array
             ChartValues = new ChartValues<MeasureModel>();
-
+            
+            // Create Series For Altitude
             cartesianChart1.Series.Add(new LineSeries
             {
                 Values = ChartValues,
