@@ -14,6 +14,7 @@ using System.Security.Permissions;
 using AForge.Video.DirectShow;
 using AForge.Video;
 //denemeye eklendi
+//jlkadsjjflsdajfldsajlfjsdaşfdsal
 namespace YildizGroundStation
 {
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
