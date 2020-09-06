@@ -24,6 +24,7 @@ namespace YildizGroundStation
 
     public partial class Form1 : MetroFramework.Forms.MetroForm
     {
+        #region Struct etc.
         public struct flight_mission
         {
             public byte gorev_sirasi;   //Gorev sirasi
@@ -55,18 +56,25 @@ namespace YildizGroundStation
 
         flight_mission[] mission_data = new flight_mission[25];
 
+        #endregion
+
         #region Variables
 
 
         byte[] send_buffer = new byte[17];
+        byte[] send_buffer_ss = new byte[5];
         byte[] temp = new byte[200];
         byte[] ConvertionBuffer = new byte[4];
         int cmp;
+        byte send_start = 0;
+        byte check_send_mission=0;
+        byte send_stop = 0;
         byte visual_studio_check=0;
         int total_check = 0;
         // Mesajlar
         int TELEMETRY_BYTE = 8;
         byte error = 0;
+        byte ismission = 0;
         byte number_of_satellite;
         byte mission = 0;
         byte check = 0;
@@ -397,6 +405,13 @@ namespace YildizGroundStation
         #endregion
 
         #region Serial Connection
+
+        private void cBox_ports_DropDown(object sender, EventArgs e)
+        {
+            string[] ports = SerialPort.GetPortNames();
+            cBox_ports.Items.AddRange(ports);
+        }
+
         private void btn_connect_Click(object sender, EventArgs e)
         {
             if (!(serialPort.IsOpen))
@@ -452,7 +467,6 @@ namespace YildizGroundStation
                 btn_connect.Text = "Connected";
             }
         }
-        #endregion
 
         private void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
@@ -484,47 +498,63 @@ namespace YildizGroundStation
 
                 switch (packet_id)
                 {
-                    case 1:
+                    case 0:
 
-                        TELEMETRY_BYTE = 13;
+                        TELEMETRY_BYTE = 14;
                         serialPort.Read(temp, 0, TELEMETRY_BYTE);
 
-                        check = temp[12];
+                        check = temp[13];
 
-                        /*
+
                         visual_studio_check = 0;
-                        total_check = 0;
-                        for (int check_counter = 0; check_counter < TELEMETRY_BYTE - 3; check_counter++)
+                        for (int check_counter = 0; check_counter < TELEMETRY_BYTE - 1; check_counter++)
                         {
-                            total_check += temp[check_counter];
+                            visual_studio_check += temp[check_counter];
                         }
-                        visual_studio_check = (byte)(total_check % 255);
-                        */
 
-                        //Height
-                        ConvertionBuffer[0] = temp[0];
-                        ConvertionBuffer[1] = temp[1];
-                        baro_height = BitConverter.ToInt16(ConvertionBuffer, 0);
+                        if (visual_studio_check == check)
+                        {
+                            //Height
+                            ConvertionBuffer[0] = temp[0];
+                            ConvertionBuffer[1] = temp[1];
+                            baro_height = BitConverter.ToInt16(ConvertionBuffer, 0);
 
-                        //Latitude
-                        ConvertionBuffer[0] = temp[2];
-                        ConvertionBuffer[1] = temp[3];
-                        ConvertionBuffer[2] = temp[4];
-                        ConvertionBuffer[3] = temp[5];
-                        M8N_latitude = BitConverter.ToInt32(ConvertionBuffer, 0) / 10000000;
+                            //Latitude
+                            ConvertionBuffer[0] = temp[2];
+                            ConvertionBuffer[1] = temp[3];
+                            ConvertionBuffer[2] = temp[4];
+                            ConvertionBuffer[3] = temp[5];
+                            M8N_latitude = BitConverter.ToInt32(ConvertionBuffer, 0) / 10000000;
 
-                        //longitude
-                        ConvertionBuffer[0] = temp[6];
-                        ConvertionBuffer[1] = temp[7];
-                        ConvertionBuffer[2] = temp[8];
-                        ConvertionBuffer[3] = temp[9];
-                        M8N_longitude = BitConverter.ToInt32(ConvertionBuffer, 0) / 10000000;
+                            //longitude
+                            ConvertionBuffer[0] = temp[6];
+                            ConvertionBuffer[1] = temp[7];
+                            ConvertionBuffer[2] = temp[8];
+                            ConvertionBuffer[3] = temp[9];
+                            M8N_longitude = BitConverter.ToInt32(ConvertionBuffer, 0) / 10000000;
 
-                        // Error
-                        error = temp[10];
+                            //is Mission
+                            ismission = temp[10];
 
-                        // Number of Satellite
-                        number_of_satellite = temp[11];
+                            if (send_start == ismission)
+                            {
+                                MessageBox.Show("Mission Started Succesfully");
+                                send_start = 2;
+                            }
+
+                            if (send_stop == ismission)
+                            {
+                                MessageBox.Show("Mission Stoped Succesfully");
+                                send_stop = 2;
+                            }
+
+                            // Error
+                            error = temp[11];
+
+                            // Number of Satellite
+                            number_of_satellite = temp[12];
+                        }
+
                         break;
 
                     case 2:
@@ -532,21 +562,24 @@ namespace YildizGroundStation
                         TELEMETRY_BYTE = 2;
                         serialPort.Read(temp, 0, TELEMETRY_BYTE);
 
-                        mission = temp[0];
+                        if (temp[0] == temp[1])
+                        {
+                            mission = temp[0];
+                        }
                         break;
 
                     default:
                         break;
                 }
 
-                
+
                 //Show Data
                 //this.Invoke(new EventHandler(ShowData));
 
                 // Status
-                status.Text = "Write Here";
+                lbl_status.Text = "Write Here";
 
-                }
+            }
 
             catch (Exception Error)
             {
@@ -554,6 +587,8 @@ namespace YildizGroundStation
             }
 
         }
+
+        #endregion
 
         #region Form Closing
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -654,7 +689,15 @@ namespace YildizGroundStation
             send_buffer[13] = (byte)(mission_data[number].boylam >> 32);
             send_buffer[14] = (byte)mission_data[number].hiz;
             send_buffer[15] = (byte)(mission_data[number].hiz >> 8);
-            send_buffer[16] = 0;
+
+            check_send_mission = 0;
+
+            for (int i = 2; i < 16; i++) 
+            {
+                check_send_mission += send_buffer[i];
+            }
+
+            send_buffer[16] = check_send_mission;
 
             serialPort.Write(send_buffer, 0, 17);
         }
@@ -697,16 +740,35 @@ namespace YildizGroundStation
             send_all_mission();
         }
 
-        private void cBox_ports_DropDown(object sender, EventArgs e)
+        private void btn_start_mission_Click(object sender, EventArgs e)
         {
-            string[] ports = SerialPort.GetPortNames();
-            cBox_ports.Items.AddRange(ports);
+            send_buffer_ss[0] = 66;
+            send_buffer_ss[1] = 71;
+            send_buffer_ss[2] = 1;
+            send_buffer_ss[3] = 1;
+            send_buffer_ss[4] = 1;
+
+            serialPort.Write(send_buffer_ss, 0, 5);
+
+            send_start = 1;
+        }
+
+        private void btn_stop_mission_Click(object sender, EventArgs e)
+        {
+            send_buffer_ss[0] = 66;
+            send_buffer_ss[1] = 71;
+            send_buffer_ss[2] = 1;
+            send_buffer_ss[3] = 0;
+            send_buffer_ss[4] = 1;
+
+            serialPort.Write(send_buffer_ss, 0, 5);
+
+            send_stop = 1;
         }
 
         private void btn_setpoint_Click(object sender, EventArgs e)
         {
             mission_counter += 1;
-            textBox_missions.Text += mission_counter.ToString() + ") " + " Lat :" + textBox_lat.Text + " - Lon :" + textBox_lon.Text + " - Height :" + textBox_altitude.Text + " - Speed :" + textBox_speed.Text + Environment.NewLine;
             
             lat_number = (Int32)(Convert.ToDouble(textBox_lat.Text)*10000000);
             lon_number = (Int32)(Convert.ToDouble(textBox_lon.Text)*10000000);
@@ -718,6 +780,9 @@ namespace YildizGroundStation
             mission_data[mission_counter - 1].enlem = lat_number;
             mission_data[mission_counter - 1].boylam = lon_number;
             mission_data[mission_counter - 1].hiz = speed_number;
+
+            textBox_missions.Text += mission_counter.ToString() + ") " + " Lat : " + ((double)lat_number/10000000).ToString() + " - Lon : " + ((double)lon_number/10000000).ToString() + " - Height : " + (altitude_number).ToString() + " [cm]" + " - Speed : " + speed_number.ToString() + " [cm/s]" + Environment.NewLine;
+
         }
         #endregion
 
