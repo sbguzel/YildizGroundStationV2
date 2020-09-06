@@ -33,27 +33,11 @@ namespace YildizGroundStation
             public UInt16 hiz;          //cm/s cinsinden hiz girisi (konuma giderken alacagi saturasyon degeri)
         }
 
-        flight_mission[] mission_data = new flight_mission[25];
-
-        byte[] temp = new byte[200];
-        byte[] ConvertionBuffer = new byte[4];
-        int cmp;
-        int branch=0;
-        int tag = 0;
-        byte visual_studio_check=0;
-        int total_check = 0;
-        // Mesajlar
-        int TELEMETRY_BYTE = 8;
-        byte error = 0;
-        byte number_of_satellite;
-        byte mission;
-        byte check = 0;
-        Int16 baro_height;
-        Int32 M8N_latitude, M8N_longitude;
-        VideoCaptureDevice frame;
-        FilterInfoCollection Devices;
-        string output;
-        byte packet_id = 0;
+        public class MeasureModel
+        {
+            public System.DateTime DateTime { get; set; }
+            public double Value { get; set; }
+        }
 
         public static string[] LatLng = new string[2];
         public HtmlElement LatLngClick;
@@ -63,24 +47,51 @@ namespace YildizGroundStation
         public HtmlElement accuracy;
         public HtmlElement altitude;
 
+        VideoCaptureDevice frame;
+        FilterInfoCollection Devices;
+
+        public ChartValues<MeasureModel> ChartValues { get; set; }
+        public System.Windows.Forms.Timer Timer { get; set; }
+
+        flight_mission[] mission_data = new flight_mission[25];
+
+        #region Variables
+
+
+        byte[] send_buffer = new byte[17];
+        byte[] temp = new byte[200];
+        byte[] ConvertionBuffer = new byte[4];
+        int cmp;
+        byte visual_studio_check=0;
+        int total_check = 0;
+        // Mesajlar
+        int TELEMETRY_BYTE = 8;
+        byte error = 0;
+        byte number_of_satellite;
+        byte mission = 0;
+        byte check = 0;
+        Int16 baro_height;
+        Int32 M8N_latitude, M8N_longitude;
+        string output;
+        byte packet_id = 0;
+
+        byte mission_counter = 0;
+        Int32 lat_number;
+        Int32 lon_number;
+        Int16 altitude_number;
+        UInt16 speed_number;
+
+        int totalcharacters;
+        int totalLines;
+        string lastLine;
+        int lastlinecharacters;
+
         double minY = 0;
         double maxY = 1000;
         int x = 0;
         int current_value = 0;
 
-        public class MeasureModel
-        {
-            public System.DateTime DateTime { get; set; }
-            public double Value { get; set; }
-        }
-
-        public ChartValues<MeasureModel> ChartValues { get; set; }
-        public System.Windows.Forms.Timer Timer { get; set; }
-        private void SetAxisLimits(System.DateTime now)
-        {
-            //cartesianChart1.AxisX[0].MaxValue = now.Ticks + TimeSpan.FromSeconds(1).Ticks; // lets force the axis to be 100ms ahead
-            cartesianChart1.AxisX[0].MinValue = now.Ticks - TimeSpan.FromSeconds(10).Ticks; //we only care about the last 8 seconds
-        }
+        #endregion
 
         #region Initiliaze Form
         public Form1()
@@ -178,6 +189,12 @@ namespace YildizGroundStation
         #endregion
 
         #region Animation
+        private void SetAxisLimits(System.DateTime now)
+        {
+            //cartesianChart1.AxisX[0].MaxValue = now.Ticks + TimeSpan.FromSeconds(1).Ticks; // lets force the axis to be 100ms ahead
+            cartesianChart1.AxisX[0].MinValue = now.Ticks - TimeSpan.FromSeconds(10).Ticks; //we only care about the last 8 seconds
+        }
+
         private void timer_livechart_Tick(object sender, EventArgs e)
         {
             GetCoordinates();
@@ -576,19 +593,6 @@ namespace YildizGroundStation
             this.Invoke(new EventHandler(NowClose)); //now close back in the main thread
         }
 
-        byte mission_counter = 0;
-        private void btn_setpoint_Click(object sender, EventArgs e)
-        {
-            mission_counter += 1;
-            textBox_missions.Text += mission_counter.ToString() + ") " + " Lat :" + textBox_lat.Text + " - Lon :" + textBox_lon.Text + " - Height :" + textBox_altitude.Text + " - Speed :" + textBox_speed.Text + Environment.NewLine;
-
-            mission_data[mission_counter - 1].gorev_sirasi = mission_counter;
-            mission_data[mission_counter - 1].yukseklik = Convert.ToInt16(textBox_altitude.Text);
-            mission_data[mission_counter - 1].enlem = Convert.ToInt32(textBox_lat.Text) * 10000000;
-            mission_data[mission_counter - 1].boylam = Convert.ToInt32(textBox_Log.Text) * 10000000;
-            mission_data[mission_counter - 1].hiz = Convert.ToUInt16(textBox_speed.Text);
-        }
-
         private void metroLabel5_Click(object sender, EventArgs e)
         {
 
@@ -599,5 +603,123 @@ namespace YildizGroundStation
             this.Close(); //now close the form
         }
         #endregion
+
+        #region Mission
+        private void btn_deletelastmission_Click(object sender, EventArgs e)
+        {
+            mission_counter -= 1;
+
+            totalcharacters = textBox_missions.Text.Trim().Length;
+            totalLines = textBox_missions.Lines.Length;
+            lastLine = textBox_missions.Lines[totalLines - 1];
+            lastlinecharacters = lastLine.Trim().Length;
+            textBox_missions.Text = textBox_missions.Text.Substring(0, totalcharacters - lastlinecharacters);
+
+            totalcharacters = textBox_missions.Text.Trim().Length;
+            totalLines = textBox_missions.Lines.Length;
+            lastLine = textBox_missions.Lines[totalLines - 1];
+            lastlinecharacters = lastLine.Trim().Length;
+            textBox_missions.Text = textBox_missions.Text.Substring(0, totalcharacters - lastlinecharacters);
+        }
+
+        private void btn_sendmission_Click(object sender, EventArgs e)
+        {
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            DialogResult result = MessageBox.Show("Please make sure that the tasks you assign to IHA are correct and within safe limits. Send mission?", "Safety", buttons);
+            if (result == DialogResult.Yes)
+            {
+                send_mission_timer.Enabled = true;
+            }
+            else
+            {
+                // Back  
+            }
+        }
+
+        public void send_mission(int number)
+        {
+            send_buffer[0] = 66;
+            send_buffer[1] = 71;
+            send_buffer[2] = 1;
+            send_buffer[3] = mission_data[number].gorev_sirasi;
+            send_buffer[4] = (byte)mission_data[number].yukseklik;
+            send_buffer[5] = (byte)(mission_data[number].yukseklik >> 8);
+            send_buffer[6] = (byte)mission_data[number].enlem;
+            send_buffer[7] = (byte)(mission_data[number].enlem>>8);
+            send_buffer[8] = (byte)(mission_data[number].enlem>>16);
+            send_buffer[9] = (byte)(mission_data[number].enlem>>32);
+            send_buffer[10] = (byte)mission_data[number].boylam;
+            send_buffer[11] = (byte)(mission_data[number].boylam >> 8);
+            send_buffer[12] = (byte)(mission_data[number].boylam >> 16);
+            send_buffer[13] = (byte)(mission_data[number].boylam >> 32);
+            send_buffer[14] = (byte)mission_data[number].hiz;
+            send_buffer[15] = (byte)(mission_data[number].hiz >> 8);
+            send_buffer[16] = 0;
+
+            serialPort.Write(send_buffer, 0, 17);
+        }
+
+        int next_send = 0;
+        int fail_counter = 0;
+        public void send_all_mission()
+        {
+            if(next_send<mission_counter)
+            {
+                if (mission == next_send)
+                {
+                    send_mission(next_send);
+                    next_send += 1;
+                    fail_counter = 0;
+                }
+                else
+                {
+                    fail_counter += 1;
+                    send_mission(next_send-1);
+
+                    if(fail_counter > 20)
+                    {
+                        send_mission_timer.Enabled = false;
+                        next_send = 0;
+                        MessageBox.Show("Connection Timeout Error, Try Again");
+                    }
+                }
+            }
+            else
+            {
+                send_mission_timer.Enabled = false;
+                next_send = 0;
+            }
+            
+        }
+
+        private void send_mission_timer_Tick(object sender, EventArgs e)
+        {
+            send_all_mission();
+        }
+
+        private void cBox_ports_DropDown(object sender, EventArgs e)
+        {
+            string[] ports = SerialPort.GetPortNames();
+            cBox_ports.Items.AddRange(ports);
+        }
+
+        private void btn_setpoint_Click(object sender, EventArgs e)
+        {
+            mission_counter += 1;
+            textBox_missions.Text += mission_counter.ToString() + ") " + " Lat :" + textBox_lat.Text + " - Lon :" + textBox_lon.Text + " - Height :" + textBox_altitude.Text + " - Speed :" + textBox_speed.Text + Environment.NewLine;
+            
+            lat_number = (Int32)(Convert.ToDouble(textBox_lat.Text)*10000000);
+            lon_number = (Int32)(Convert.ToDouble(textBox_lon.Text)*10000000);
+            altitude_number = (Int16)(Convert.ToDouble(textBox_altitude.Text.Replace(',','.'), CultureInfo.InvariantCulture.NumberFormat) * 100);
+            speed_number = (UInt16)(Convert.ToDouble(textBox_speed.Text.Replace(',', '.'), CultureInfo.InvariantCulture.NumberFormat) * 27.7778);
+            
+            mission_data[mission_counter - 1].gorev_sirasi = mission_counter;
+            mission_data[mission_counter - 1].yukseklik = altitude_number;
+            mission_data[mission_counter - 1].enlem = lat_number;
+            mission_data[mission_counter - 1].boylam = lon_number;
+            mission_data[mission_counter - 1].hiz = speed_number;
+        }
+        #endregion
+
     }
 }
