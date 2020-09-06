@@ -207,6 +207,8 @@ namespace YildizGroundStation
         {
             GetCoordinates();
 
+            textBox_incoming.Text = number_of_satellite.ToString() + " " + M8N_latitude.ToString() + "  " + M8N_longitude + " " + ismission.ToString();
+
             current_value += 1;
             if (current_value > 200) current_value = 0;
             //solidGauge1.Value = current_value;
