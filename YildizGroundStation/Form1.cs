@@ -66,9 +66,10 @@ namespace YildizGroundStation
         byte[] temp = new byte[200];
         byte[] ConvertionBuffer = new byte[4];
         int cmp;
-        byte send_start = 0;
+        byte incoming_message = 0;
+        byte send_start = 2;
         byte check_send_mission=0;
-        byte send_stop = 0;
+        byte send_stop = 2;
         byte visual_studio_check=0;
         int total_check = 0;
         // Mesajlar
@@ -82,7 +83,7 @@ namespace YildizGroundStation
         Int32 M8N_latitude, M8N_longitude;
         string output;
         byte packet_id = 0;
-
+        byte telem_length = 0;
         byte mission_counter = 0;
         Int32 lat_number;
         Int32 lon_number;
@@ -207,7 +208,7 @@ namespace YildizGroundStation
         {
             GetCoordinates();
 
-            textBox_incoming.Text = number_of_satellite.ToString() + " " + M8N_latitude.ToString() + "  " + M8N_longitude + " " + ismission.ToString();
+            textBox_incoming.Text = number_of_satellite.ToString() + " " + M8N_latitude.ToString() + " " + M8N_longitude + " " + ismission.ToString() + ", vscheck/check : " + visual_studio_check.ToString() + " / " + check.ToString();
 
             current_value += 1;
             if (current_value > 200) current_value = 0;
@@ -410,6 +411,7 @@ namespace YildizGroundStation
 
         private void cBox_ports_DropDown(object sender, EventArgs e)
         {
+            cBox_ports.Items.Clear();
             string[] ports = SerialPort.GetPortNames();
             cBox_ports.Items.AddRange(ports);
         }
@@ -483,97 +485,119 @@ namespace YildizGroundStation
                 */
 
                 // Security bytes
-                while (true)
+                while (serialPort.BytesToRead > 2 && incoming_message == 0)
                 {
                     cmp = serialPort.ReadByte();
                     if (cmp == 'B')
                     {
                         cmp = serialPort.ReadByte();
                         if (cmp == 'G')
-
-                            break;
+                        {
+                            incoming_message = 1;
+                        }
                     }
 
                 }
 
-                packet_id = (byte)serialPort.ReadByte();
-
-                switch (packet_id)
+                if(incoming_message == 1)
                 {
-                    case 0:
+                    packet_id = (byte)serialPort.ReadByte();
 
-                        TELEMETRY_BYTE = 14;
-                        serialPort.Read(temp, 0, TELEMETRY_BYTE);
-
-                        check = temp[13];
-
-
-                        visual_studio_check = 0;
-                        for (int check_counter = 0; check_counter < TELEMETRY_BYTE - 1; check_counter++)
-                        {
-                            visual_studio_check += temp[check_counter];
-                        }
-
-                        if (visual_studio_check == check)
-                        {
-                            //Height
-                            ConvertionBuffer[0] = temp[0];
-                            ConvertionBuffer[1] = temp[1];
-                            baro_height = BitConverter.ToInt16(ConvertionBuffer, 0);
-
-                            //Latitude
-                            ConvertionBuffer[0] = temp[2];
-                            ConvertionBuffer[1] = temp[3];
-                            ConvertionBuffer[2] = temp[4];
-                            ConvertionBuffer[3] = temp[5];
-                            M8N_latitude = BitConverter.ToInt32(ConvertionBuffer, 0) / 10000000;
-
-                            //longitude
-                            ConvertionBuffer[0] = temp[6];
-                            ConvertionBuffer[1] = temp[7];
-                            ConvertionBuffer[2] = temp[8];
-                            ConvertionBuffer[3] = temp[9];
-                            M8N_longitude = BitConverter.ToInt32(ConvertionBuffer, 0) / 10000000;
-
-                            //is Mission
-                            ismission = temp[10];
-
-                            if (send_start == ismission)
-                            {
-                                MessageBox.Show("Mission Started Succesfully");
-                                send_start = 2;
-                            }
-
-                            if (send_stop == ismission)
-                            {
-                                MessageBox.Show("Mission Stoped Succesfully");
-                                send_stop = 2;
-                            }
-
-                            // Error
-                            error = temp[11];
-
-                            // Number of Satellite
-                            number_of_satellite = temp[12];
-                        }
-
-                        break;
-
-                    case 2:
-
-                        TELEMETRY_BYTE = 2;
-                        serialPort.Read(temp, 0, TELEMETRY_BYTE);
-
-                        if (temp[0] == temp[1])
-                        {
-                            mission = temp[0];
-                        }
-                        break;
-
-                    default:
-                        break;
+                    if (packet_id == 0)
+                    {
+                        telem_length = 14;
+                        incoming_message = 2;
+                    }
+                    else if (packet_id == 2)
+                    { 
+                        telem_length = 2;
+                        incoming_message = 2;
+                    }
                 }
+                
+                if(incoming_message == 2 && (serialPort.BytesToRead >= telem_length))
+                {
+                    switch (packet_id)
+                    {
+                        case 0:
 
+                            TELEMETRY_BYTE = 14;
+                            serialPort.Read(temp, 0, TELEMETRY_BYTE);
+
+                            check = temp[13];
+
+
+                            visual_studio_check = 0;
+                            for (int check_counter = 0; check_counter < TELEMETRY_BYTE - 1; check_counter++)
+                            {
+                                visual_studio_check += temp[check_counter];
+                            }
+
+                            if (visual_studio_check == check)
+                            {
+                                //Height
+                                ConvertionBuffer[0] = temp[0];
+                                ConvertionBuffer[1] = temp[1];
+                                baro_height = BitConverter.ToInt16(ConvertionBuffer, 0);
+
+                                //Latitude
+                                ConvertionBuffer[0] = temp[2];
+                                ConvertionBuffer[1] = temp[3];
+                                ConvertionBuffer[2] = temp[4];
+                                ConvertionBuffer[3] = temp[5];
+                                M8N_latitude = BitConverter.ToInt32(ConvertionBuffer, 0) / 10000000;
+
+                                //longitude
+                                ConvertionBuffer[0] = temp[6];
+                                ConvertionBuffer[1] = temp[7];
+                                ConvertionBuffer[2] = temp[8];
+                                ConvertionBuffer[3] = temp[9];
+                                M8N_longitude = BitConverter.ToInt32(ConvertionBuffer, 0) / 10000000;
+
+                                //is Mission
+                                ismission = temp[10];
+
+                                if (send_start == ismission)
+                                {
+                                    MessageBox.Show("Mission Started Succesfully");
+                                    send_start = 2;
+                                }
+
+                                if (send_stop == ismission)
+                                {
+                                    MessageBox.Show("Mission Stoped Succesfully");
+                                    send_stop = 2;
+                                }
+
+                                // Error
+                                error = temp[11];
+
+                                // Number of Satellite
+                                number_of_satellite = temp[12];
+                            }
+
+                            break;
+
+                        case 2:
+
+                            TELEMETRY_BYTE = 2;
+                            serialPort.Read(temp, 0, TELEMETRY_BYTE);
+
+                            textBox_Log.Text += temp[0] + " " + temp[1] + Environment.NewLine;
+
+                            if (temp[0] + 2 == temp[1])
+                            {
+                                mission = temp[0];
+                                //textBox_Log.Text += mission.ToString() + "\n";
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    incoming_message = 0;
+                }
 
                 //Show Data
                 //this.Invoke(new EventHandler(ShowData));
@@ -684,11 +708,11 @@ namespace YildizGroundStation
             send_buffer[6] = (byte)mission_data[number].enlem;
             send_buffer[7] = (byte)(mission_data[number].enlem>>8);
             send_buffer[8] = (byte)(mission_data[number].enlem>>16);
-            send_buffer[9] = (byte)(mission_data[number].enlem>>32);
+            send_buffer[9] = (byte)(mission_data[number].enlem>>24);
             send_buffer[10] = (byte)mission_data[number].boylam;
             send_buffer[11] = (byte)(mission_data[number].boylam >> 8);
             send_buffer[12] = (byte)(mission_data[number].boylam >> 16);
-            send_buffer[13] = (byte)(mission_data[number].boylam >> 32);
+            send_buffer[13] = (byte)(mission_data[number].boylam >> 24);
             send_buffer[14] = (byte)mission_data[number].hiz;
             send_buffer[15] = (byte)(mission_data[number].hiz >> 8);
 
@@ -701,14 +725,19 @@ namespace YildizGroundStation
 
             send_buffer[16] = check_send_mission;
 
+            
+            int a = serialPort.BytesToRead;
+            serialPort.Read(temp, 0, a);
+            
             serialPort.Write(send_buffer, 0, 17);
+
         }
 
         int next_send = 0;
         int fail_counter = 0;
         public void send_all_mission()
         {
-            if(next_send<mission_counter)
+            if(next_send <= mission_counter)
             {
                 if (mission == next_send)
                 {
