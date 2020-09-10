@@ -77,6 +77,7 @@ namespace YildizGroundStation
         byte error = 0;
         byte ismission = 0;
         byte number_of_satellite;
+        float mad_yaw_angle;
         byte mission = 0;
         byte check = 0;
         Int16 baro_height;
@@ -207,6 +208,8 @@ namespace YildizGroundStation
         private void timer_livechart_Tick(object sender, EventArgs e)
         {
             GetCoordinates();
+
+            headingIndicatorInstrumentControl1.SetHeadingIndicatorParameters((int)mad_yaw_angle);
 
             textBox_incoming.Text = number_of_satellite.ToString() + " " + M8N_latitude.ToString() + " " + M8N_longitude + " " + ismission.ToString() + ", vscheck/check : " + visual_studio_check.ToString() + " / " + check.ToString();
 
@@ -513,6 +516,11 @@ namespace YildizGroundStation
                         telem_length = 2;
                         incoming_message = 2;
                     }
+                    else if (packet_id == 5)
+                    {
+                        telem_length = 3;
+                        incoming_message = 2;
+                    }
                 }
                 
                 if(incoming_message == 2 && (serialPort.BytesToRead >= telem_length))
@@ -592,6 +600,21 @@ namespace YildizGroundStation
                             }
                             break;
 
+                        case 5:
+
+                            TELEMETRY_BYTE = 3;
+                            serialPort.Read(temp, 0, TELEMETRY_BYTE);
+
+                            if(true)  //temp[2] == (byte)(TELEMETRY_BYTE + temp[0] + temp[1])
+                            {
+                                ConvertionBuffer[0] = temp[0];
+                                ConvertionBuffer[1] = temp[1];
+                                mad_yaw_angle = BitConverter.ToInt16(ConvertionBuffer, 0) / 1000.0f;
+                            }
+                            
+                            lbl_status.Text = mad_yaw_angle.ToString();
+                            break;
+
                         default:
                             break;
                     }
@@ -603,7 +626,7 @@ namespace YildizGroundStation
                 //this.Invoke(new EventHandler(ShowData));
 
                 // Status
-                lbl_status.Text = "Write Here";
+                //lbl_status.Text = "Write Here";
 
             }
 
@@ -801,8 +824,8 @@ namespace YildizGroundStation
         {
             mission_counter += 1;
             
-            lat_number = (Int32)(Convert.ToDouble(textBox_lat.Text)*10000000);
-            lon_number = (Int32)(Convert.ToDouble(textBox_lon.Text)*10000000);
+            lat_number = (Int32)((Convert.ToDouble(textBox_lat.Text)- 0.00000520) * 10000000);
+            lon_number = (Int32)((Convert.ToDouble(textBox_lon.Text) - 0.00000433) * 10000000);
             altitude_number = (Int16)(Convert.ToDouble(textBox_altitude.Text.Replace(',','.'), CultureInfo.InvariantCulture.NumberFormat) * 100);
             speed_number = (UInt16)(Convert.ToDouble(textBox_speed.Text.Replace(',', '.'), CultureInfo.InvariantCulture.NumberFormat) * 27.7778);
             
