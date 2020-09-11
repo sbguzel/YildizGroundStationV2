@@ -86,6 +86,7 @@ namespace YildizGroundStation
         byte packet_id = 0;
         byte telem_length = 0;
         byte mission_counter = 0;
+        byte sender_counter;
         Int32 lat_number;
         Int32 lon_number;
         Int16 altitude_number;
@@ -796,24 +797,26 @@ namespace YildizGroundStation
 
         private void btn_start_mission_Click(object sender, EventArgs e)
         {
+           
             send_buffer_ss[0] = 66;
             send_buffer_ss[1] = 71;
-            send_buffer_ss[2] = 1;
+            send_buffer_ss[2] = 3;
             send_buffer_ss[3] = 1;
-            send_buffer_ss[4] = 1;
+            send_buffer_ss[4] = 4;
 
             serialPort.Write(send_buffer_ss, 0, 5);
 
             send_start = 1;
+
         }
 
         private void btn_stop_mission_Click(object sender, EventArgs e)
         {
             send_buffer_ss[0] = 66;
             send_buffer_ss[1] = 71;
-            send_buffer_ss[2] = 1;
+            send_buffer_ss[2] = 3;
             send_buffer_ss[3] = 0;
-            send_buffer_ss[4] = 1;
+            send_buffer_ss[4] = 3;
 
             serialPort.Write(send_buffer_ss, 0, 5);
 

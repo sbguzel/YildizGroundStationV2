@@ -1,0 +1,6 @@
+﻿1>------ Derleme başladı: Proje: YildizGroundStation, Yapılandırma: Debug Any CPU ------
+1>D:\saidburakguzel\Projects\Works\C#\YildizGroundStationV2\YildizGroundStation\Form1.cs(302,30,302,32): warning CS0168: ex' değişkeni ifade edilir ancak hiçbir zaman kullanılmaz
+1>D:\saidburakguzel\Projects\Works\C#\YildizGroundStationV2\YildizGroundStation\Form1.cs(89,14,89,28): warning CS0169: Form1.sender_counter' alanı hiçbir zaman kullanılmaz
+1>D:\saidburakguzel\Projects\Works\C#\YildizGroundStationV2\YildizGroundStation\Form1.cs(74,13,74,24): warning CS0414: Form1.total_check' alanı atanır ancak değeri hiçbir zaman kullanılmaz
+1>  YildizGroundStation -> D:\saidburakguzel\Projects\Works\C#\YildizGroundStationV2\YildizGroundStation\bin\Debug\YildizGroundStation.exe
+========== Oluşturma: 1 başarılı, 0 başarısız, 0 güncel, 0 atlandı ==========
