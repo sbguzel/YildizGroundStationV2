@@ -208,7 +208,7 @@ namespace YildizGroundStation
 
         private void timer_livechart_Tick(object sender, EventArgs e)
         {
-            GetCoordinates();
+            //GetCoordinates();
 
             headingIndicatorInstrumentControl1.SetHeadingIndicatorParameters((int)mad_yaw_angle);
 
@@ -524,7 +524,7 @@ namespace YildizGroundStation
                     }
                 }
                 
-                if(incoming_message == 2 && (serialPort.BytesToRead >= telem_length))
+                if(incoming_message == 2 && (serialPort.BytesToRead > (telem_length-1)))
                 {
                     switch (packet_id)
                     {
@@ -565,7 +565,7 @@ namespace YildizGroundStation
 
                                 //is Mission
                                 ismission = temp[10];
-
+                                /*
                                 if (send_start == ismission)
                                 {
                                     MessageBox.Show("Mission Started Succesfully");
@@ -577,7 +577,7 @@ namespace YildizGroundStation
                                     MessageBox.Show("Mission Stoped Succesfully");
                                     send_stop = 2;
                                 }
-
+                                */
                                 // Error
                                 error = temp[11];
 
@@ -592,12 +592,10 @@ namespace YildizGroundStation
                             TELEMETRY_BYTE = 2;
                             serialPort.Read(temp, 0, TELEMETRY_BYTE);
 
-                            textBox_Log.Text += temp[0] + " " + temp[1] + Environment.NewLine;
-
                             if (temp[0] + 2 == temp[1])
                             {
+                                textBox_Log.Text = "Misson sended succecfully" + Environment.NewLine;
                                 mission = temp[0];
-                                //textBox_Log.Text += mission.ToString() + "\n";
                             }
                             break;
 
@@ -761,7 +759,7 @@ namespace YildizGroundStation
         int fail_counter = 0;
         public void send_all_mission()
         {
-            if(next_send <= mission_counter)
+            if(next_send < mission_counter)
             {
                 if (mission == next_send)
                 {
@@ -786,6 +784,7 @@ namespace YildizGroundStation
             {
                 send_mission_timer.Enabled = false;
                 next_send = 0;
+                fail_counter = 0;
             }
             
         }
@@ -826,9 +825,14 @@ namespace YildizGroundStation
         private void btn_setpoint_Click(object sender, EventArgs e)
         {
             mission_counter += 1;
-            
+            /*
             lat_number = (Int32)((Convert.ToDouble(textBox_lat.Text)- 0.00000520) * 10000000);
             lon_number = (Int32)((Convert.ToDouble(textBox_lon.Text) - 0.00000433) * 10000000);
+            */
+            lat_number = (Int32)(Convert.ToDouble(textBox_lat.Text) * 10000000);
+            lon_number = (Int32)(Convert.ToDouble(textBox_lon.Text) * 10000000);
+
+
             altitude_number = (Int16)(Convert.ToDouble(textBox_altitude.Text.Replace(',','.'), CultureInfo.InvariantCulture.NumberFormat) * 100);
             speed_number = (UInt16)(Convert.ToDouble(textBox_speed.Text.Replace(',', '.'), CultureInfo.InvariantCulture.NumberFormat) * 27.7778);
             
