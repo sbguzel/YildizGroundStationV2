@@ -508,9 +508,9 @@
             // 
             // 
             this.textBox_missions.CustomButton.Image = null;
-            this.textBox_missions.CustomButton.Location = new System.Drawing.Point(453, 2);
+            this.textBox_missions.CustomButton.Location = new System.Drawing.Point(449, 2);
             this.textBox_missions.CustomButton.Name = "";
-            this.textBox_missions.CustomButton.Size = new System.Drawing.Size(41, 41);
+            this.textBox_missions.CustomButton.Size = new System.Drawing.Size(45, 45);
             this.textBox_missions.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
             this.textBox_missions.CustomButton.TabIndex = 1;
             this.textBox_missions.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
@@ -518,7 +518,7 @@
             this.textBox_missions.CustomButton.Visible = false;
             this.textBox_missions.Dock = System.Windows.Forms.DockStyle.Top;
             this.textBox_missions.Lines = new string[0];
-            this.textBox_missions.Location = new System.Drawing.Point(0, 140);
+            this.textBox_missions.Location = new System.Drawing.Point(0, 112);
             this.textBox_missions.MaxLength = 32767;
             this.textBox_missions.Multiline = true;
             this.textBox_missions.Name = "textBox_missions";
@@ -528,7 +528,7 @@
             this.textBox_missions.SelectionLength = 0;
             this.textBox_missions.SelectionStart = 0;
             this.textBox_missions.ShortcutsEnabled = true;
-            this.textBox_missions.Size = new System.Drawing.Size(497, 46);
+            this.textBox_missions.Size = new System.Drawing.Size(497, 50);
             this.textBox_missions.TabIndex = 16;
             this.textBox_missions.UseSelectable = true;
             this.textBox_missions.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
@@ -542,7 +542,7 @@
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.groupBox1.Size = new System.Drawing.Size(497, 140);
+            this.groupBox1.Size = new System.Drawing.Size(497, 112);
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
             // 
@@ -572,16 +572,16 @@
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(491, 119);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(491, 91);
             this.tableLayoutPanel4.TabIndex = 15;
             // 
             // metroLabel3
             // 
             this.metroLabel3.AutoSize = true;
             this.metroLabel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.metroLabel3.Location = new System.Drawing.Point(3, 87);
+            this.metroLabel3.Location = new System.Drawing.Point(3, 66);
             this.metroLabel3.Name = "metroLabel3";
-            this.metroLabel3.Size = new System.Drawing.Size(93, 32);
+            this.metroLabel3.Size = new System.Drawing.Size(93, 25);
             this.metroLabel3.TabIndex = 16;
             this.metroLabel3.Text = "Speed [kmh]";
             // 
@@ -591,9 +591,9 @@
             // 
             // 
             this.textBox_speed.CustomButton.Image = null;
-            this.textBox_speed.CustomButton.Location = new System.Drawing.Point(68, 2);
+            this.textBox_speed.CustomButton.Location = new System.Drawing.Point(74, 1);
             this.textBox_speed.CustomButton.Name = "";
-            this.textBox_speed.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this.textBox_speed.CustomButton.Size = new System.Drawing.Size(17, 17);
             this.textBox_speed.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
             this.textBox_speed.CustomButton.TabIndex = 1;
             this.textBox_speed.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
@@ -602,7 +602,7 @@
             this.textBox_speed.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox_speed.Lines = new string[] {
         "0"};
-            this.textBox_speed.Location = new System.Drawing.Point(102, 90);
+            this.textBox_speed.Location = new System.Drawing.Point(102, 69);
             this.textBox_speed.MaxLength = 32767;
             this.textBox_speed.Name = "textBox_speed";
             this.textBox_speed.PasswordChar = '\0';
@@ -612,7 +612,7 @@
             this.textBox_speed.SelectionLength = 0;
             this.textBox_speed.SelectionStart = 0;
             this.textBox_speed.ShortcutsEnabled = true;
-            this.textBox_speed.Size = new System.Drawing.Size(92, 26);
+            this.textBox_speed.Size = new System.Drawing.Size(92, 19);
             this.textBox_speed.TabIndex = 15;
             this.textBox_speed.Text = "0";
             this.textBox_speed.UseSelectable = true;
@@ -625,7 +625,7 @@
             this.metroLabel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.metroLabel1.Location = new System.Drawing.Point(3, 0);
             this.metroLabel1.Name = "metroLabel1";
-            this.metroLabel1.Size = new System.Drawing.Size(93, 29);
+            this.metroLabel1.Size = new System.Drawing.Size(93, 22);
             this.metroLabel1.TabIndex = 10;
             this.metroLabel1.Text = "Latitude";
             // 
@@ -635,7 +635,7 @@
             this.btn_sendmission.Location = new System.Drawing.Point(347, 3);
             this.btn_sendmission.Name = "btn_sendmission";
             this.tableLayoutPanel4.SetRowSpan(this.btn_sendmission, 4);
-            this.btn_sendmission.Size = new System.Drawing.Size(141, 113);
+            this.btn_sendmission.Size = new System.Drawing.Size(141, 85);
             this.btn_sendmission.TabIndex = 14;
             this.btn_sendmission.Text = "Send Mission";
             this.btn_sendmission.UseSelectable = true;
@@ -647,7 +647,7 @@
             this.btn_setpoint.Location = new System.Drawing.Point(200, 3);
             this.btn_setpoint.Name = "btn_setpoint";
             this.tableLayoutPanel4.SetRowSpan(this.btn_setpoint, 3);
-            this.btn_setpoint.Size = new System.Drawing.Size(141, 81);
+            this.btn_setpoint.Size = new System.Drawing.Size(141, 60);
             this.btn_setpoint.TabIndex = 14;
             this.btn_setpoint.Text = "Set Point";
             this.btn_setpoint.UseSelectable = true;
@@ -657,9 +657,9 @@
             // 
             this.metroLabel2.AutoSize = true;
             this.metroLabel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.metroLabel2.Location = new System.Drawing.Point(3, 29);
+            this.metroLabel2.Location = new System.Drawing.Point(3, 22);
             this.metroLabel2.Name = "metroLabel2";
-            this.metroLabel2.Size = new System.Drawing.Size(93, 29);
+            this.metroLabel2.Size = new System.Drawing.Size(93, 22);
             this.metroLabel2.TabIndex = 13;
             this.metroLabel2.Text = "Longitude";
             // 
@@ -669,9 +669,9 @@
             // 
             // 
             this.textBox_altitude.CustomButton.Image = null;
-            this.textBox_altitude.CustomButton.Location = new System.Drawing.Point(70, 1);
+            this.textBox_altitude.CustomButton.Location = new System.Drawing.Point(78, 2);
             this.textBox_altitude.CustomButton.Name = "";
-            this.textBox_altitude.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this.textBox_altitude.CustomButton.Size = new System.Drawing.Size(11, 11);
             this.textBox_altitude.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
             this.textBox_altitude.CustomButton.TabIndex = 1;
             this.textBox_altitude.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
@@ -680,7 +680,7 @@
             this.textBox_altitude.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox_altitude.Lines = new string[] {
         "0"};
-            this.textBox_altitude.Location = new System.Drawing.Point(102, 61);
+            this.textBox_altitude.Location = new System.Drawing.Point(102, 47);
             this.textBox_altitude.MaxLength = 32767;
             this.textBox_altitude.Name = "textBox_altitude";
             this.textBox_altitude.PasswordChar = '\0';
@@ -690,7 +690,7 @@
             this.textBox_altitude.SelectionLength = 0;
             this.textBox_altitude.SelectionStart = 0;
             this.textBox_altitude.ShortcutsEnabled = true;
-            this.textBox_altitude.Size = new System.Drawing.Size(92, 23);
+            this.textBox_altitude.Size = new System.Drawing.Size(92, 16);
             this.textBox_altitude.TabIndex = 9;
             this.textBox_altitude.Text = "0";
             this.textBox_altitude.UseSelectable = true;
@@ -701,9 +701,9 @@
             // 
             this.metroLabel5.AutoSize = true;
             this.metroLabel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.metroLabel5.Location = new System.Drawing.Point(3, 58);
+            this.metroLabel5.Location = new System.Drawing.Point(3, 44);
             this.metroLabel5.Name = "metroLabel5";
-            this.metroLabel5.Size = new System.Drawing.Size(93, 29);
+            this.metroLabel5.Size = new System.Drawing.Size(93, 22);
             this.metroLabel5.TabIndex = 6;
             this.metroLabel5.Text = "Altitude [m]";
             this.metroLabel5.Click += new System.EventHandler(this.metroLabel5_Click);
@@ -714,9 +714,9 @@
             // 
             // 
             this.textBox_lat.CustomButton.Image = null;
-            this.textBox_lat.CustomButton.Location = new System.Drawing.Point(70, 1);
+            this.textBox_lat.CustomButton.Location = new System.Drawing.Point(78, 2);
             this.textBox_lat.CustomButton.Name = "";
-            this.textBox_lat.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this.textBox_lat.CustomButton.Size = new System.Drawing.Size(11, 11);
             this.textBox_lat.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
             this.textBox_lat.CustomButton.TabIndex = 1;
             this.textBox_lat.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
@@ -735,7 +735,7 @@
             this.textBox_lat.SelectionLength = 0;
             this.textBox_lat.SelectionStart = 0;
             this.textBox_lat.ShortcutsEnabled = true;
-            this.textBox_lat.Size = new System.Drawing.Size(92, 23);
+            this.textBox_lat.Size = new System.Drawing.Size(92, 16);
             this.textBox_lat.TabIndex = 11;
             this.textBox_lat.Text = "0";
             this.textBox_lat.UseSelectable = true;
@@ -748,9 +748,9 @@
             // 
             // 
             this.textBox_lon.CustomButton.Image = null;
-            this.textBox_lon.CustomButton.Location = new System.Drawing.Point(70, 1);
+            this.textBox_lon.CustomButton.Location = new System.Drawing.Point(78, 2);
             this.textBox_lon.CustomButton.Name = "";
-            this.textBox_lon.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this.textBox_lon.CustomButton.Size = new System.Drawing.Size(11, 11);
             this.textBox_lon.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
             this.textBox_lon.CustomButton.TabIndex = 1;
             this.textBox_lon.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
@@ -759,7 +759,7 @@
             this.textBox_lon.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox_lon.Lines = new string[] {
         "0"};
-            this.textBox_lon.Location = new System.Drawing.Point(102, 32);
+            this.textBox_lon.Location = new System.Drawing.Point(102, 25);
             this.textBox_lon.MaxLength = 32767;
             this.textBox_lon.Name = "textBox_lon";
             this.textBox_lon.PasswordChar = '\0';
@@ -769,7 +769,7 @@
             this.textBox_lon.SelectionLength = 0;
             this.textBox_lon.SelectionStart = 0;
             this.textBox_lon.ShortcutsEnabled = true;
-            this.textBox_lon.Size = new System.Drawing.Size(92, 23);
+            this.textBox_lon.Size = new System.Drawing.Size(92, 16);
             this.textBox_lon.TabIndex = 12;
             this.textBox_lon.Text = "0";
             this.textBox_lon.UseSelectable = true;
@@ -779,9 +779,9 @@
             // btn_deletelastmission
             // 
             this.btn_deletelastmission.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_deletelastmission.Location = new System.Drawing.Point(200, 90);
+            this.btn_deletelastmission.Location = new System.Drawing.Point(200, 69);
             this.btn_deletelastmission.Name = "btn_deletelastmission";
-            this.btn_deletelastmission.Size = new System.Drawing.Size(141, 26);
+            this.btn_deletelastmission.Size = new System.Drawing.Size(141, 19);
             this.btn_deletelastmission.TabIndex = 17;
             this.btn_deletelastmission.Text = "Delete Last Point";
             this.btn_deletelastmission.UseSelectable = true;
@@ -795,7 +795,7 @@
             this.metroTabPage8.HorizontalScrollbarSize = 6;
             this.metroTabPage8.Location = new System.Drawing.Point(4, 38);
             this.metroTabPage8.Name = "metroTabPage8";
-            this.metroTabPage8.Size = new System.Drawing.Size(425, 197);
+            this.metroTabPage8.Size = new System.Drawing.Size(497, 215);
             this.metroTabPage8.TabIndex = 1;
             this.metroTabPage8.Text = "Start/Stop";
             this.metroTabPage8.VerticalScrollbarBarColor = true;
@@ -816,8 +816,8 @@
             this.tableLayoutPanel5.RowCount = 2;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(425, 150);
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 17F));
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(497, 162);
             this.tableLayoutPanel5.TabIndex = 3;
             // 
             // textBox_incoming
@@ -827,9 +827,9 @@
             // 
             // 
             this.textBox_incoming.CustomButton.Image = null;
-            this.textBox_incoming.CustomButton.Location = new System.Drawing.Point(351, 1);
+            this.textBox_incoming.CustomButton.Location = new System.Drawing.Point(417, 1);
             this.textBox_incoming.CustomButton.Name = "";
-            this.textBox_incoming.CustomButton.Size = new System.Drawing.Size(67, 67);
+            this.textBox_incoming.CustomButton.Size = new System.Drawing.Size(73, 73);
             this.textBox_incoming.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
             this.textBox_incoming.CustomButton.TabIndex = 1;
             this.textBox_incoming.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
@@ -837,7 +837,7 @@
             this.textBox_incoming.CustomButton.Visible = false;
             this.textBox_incoming.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox_incoming.Lines = new string[0];
-            this.textBox_incoming.Location = new System.Drawing.Point(3, 78);
+            this.textBox_incoming.Location = new System.Drawing.Point(3, 84);
             this.textBox_incoming.MaxLength = 32767;
             this.textBox_incoming.Multiline = true;
             this.textBox_incoming.Name = "textBox_incoming";
@@ -848,7 +848,7 @@
             this.textBox_incoming.SelectionLength = 0;
             this.textBox_incoming.SelectionStart = 0;
             this.textBox_incoming.ShortcutsEnabled = true;
-            this.textBox_incoming.Size = new System.Drawing.Size(419, 69);
+            this.textBox_incoming.Size = new System.Drawing.Size(491, 75);
             this.textBox_incoming.TabIndex = 3;
             this.textBox_incoming.UseSelectable = true;
             this.textBox_incoming.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
@@ -857,9 +857,9 @@
             // btn_stop_mission
             // 
             this.btn_stop_mission.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_stop_mission.Location = new System.Drawing.Point(215, 3);
+            this.btn_stop_mission.Location = new System.Drawing.Point(251, 3);
             this.btn_stop_mission.Name = "btn_stop_mission";
-            this.btn_stop_mission.Size = new System.Drawing.Size(207, 69);
+            this.btn_stop_mission.Size = new System.Drawing.Size(243, 75);
             this.btn_stop_mission.TabIndex = 2;
             this.btn_stop_mission.Text = "Stop";
             this.btn_stop_mission.UseSelectable = true;
@@ -870,7 +870,7 @@
             this.btn_start_mission.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btn_start_mission.Location = new System.Drawing.Point(3, 3);
             this.btn_start_mission.Name = "btn_start_mission";
-            this.btn_start_mission.Size = new System.Drawing.Size(206, 69);
+            this.btn_start_mission.Size = new System.Drawing.Size(242, 75);
             this.btn_start_mission.TabIndex = 2;
             this.btn_start_mission.Text = "Start";
             this.btn_start_mission.UseSelectable = true;
